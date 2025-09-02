@@ -22,19 +22,50 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+[Oo]ut/
 
 # .NET Core
 project.lock.json
 project.fragment.lock.json
 artifacts/
+out/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.tmp
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+.dotnet/
+.tools/
+
+# Entity Framework
+*.edmx.diagram
+*.edmx.sql
+migrations/
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
 # NuGet Packages
 *.nupkg
-# NuGet Symbol Packages
 *.snupkg
+.nuget/
+packages/
+!packages/build/
+*.nuget.props
+*.nuget.targets
 
 # Others
 ~$*
@@ -43,6 +74,9 @@ CodeCoverage/
 
 # MSBuild Binary and Structured Log
 *.binlog
+msbuild.log
+msbuild.err
+msbuild.wrn
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -52,3 +86,61 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+
+# React Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.pnp
+.pnp.js
+coverage/
+build/
+dist/
+*.tgz
+*.tar.gz
+.cache/
+.parcel-cache/
+.nyc_output
+.eslintcache
+.stylelintcache
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+lerna-debug.log*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+chatapp.db-shm
+chatapp.db-wal
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDE files
+*.swp
+*.swo
+.idea/
+*.iml
+*.ipr
+*.iws
