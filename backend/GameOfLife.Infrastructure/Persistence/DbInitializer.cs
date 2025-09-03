@@ -11,7 +11,7 @@ public static class DbInitializer
 
     if (context.Boards.Any()) { return; }
 
-    // Create an 8x8 board with random cells
+    // Create an 8x8 board with random isAlive
     var cells = new List<Cell>();
     for (int x = 0; x < 8; x++)
     {

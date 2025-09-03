@@ -124,8 +124,8 @@ lerna-debug.log*
 *.db
 *.sqlite
 *.sqlite3
-chatapp.db-shm
-chatapp.db-wal
+gameoflife.db-shm
+gameoflife.db-wal
 
 # OS generated files
 .DS_Store
