@@ -17,6 +17,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Initialize database with seed data
+using (var scope = app.Services.CreateScope())
+{
+  var context = scope.ServiceProvider.GetRequiredService<GameDbContext>();
+  
+  DbInitializer.Initialize(context);
+}
+
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();

@@ -17,12 +17,14 @@ public class GameDbContext : DbContext
     {
       entity.HasKey(e => e.Id);
       entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-      entity.Property(e => e.Cells)
-            .HasConversion(
-                v => System.Text.Json.JsonSerializer.Serialize(v, (System.Text.Json.JsonSerializerOptions)null),
-                v => System.Text.Json.JsonSerializer.Deserialize<List<Cell>>(v, (System.Text.Json.JsonSerializerOptions)null))
-            .IsRequired();
       entity.Property(e => e.CreatedAt).IsRequired();
+      entity.HasMany(e => e.Cells).WithOne().HasForeignKey("BoardId").IsRequired();
+    });
+
+    modelBuilder.Entity<Cell>(entity =>
+    {
+      entity.HasKey(e => new { e.Row, e.Column, e.BoardId });
+      entity.Property(e => e.IsAlive);
     });
 
     base.OnModelCreating(modelBuilder);
