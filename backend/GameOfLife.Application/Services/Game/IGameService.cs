@@ -8,4 +8,5 @@ namespace GameOfLife.Application.Services;
 public interface IGameService
 {
   public Board GetNextGeneration(Board currentBoard);
+  public int? CountAliveNeighbors(bool[][] grid, int row, int col);
 }

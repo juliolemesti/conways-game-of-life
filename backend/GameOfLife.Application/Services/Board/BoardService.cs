@@ -18,7 +18,7 @@ public class BoardService : IBoardService
   public async Task<BoardDto?> GetBoardByIdAsync(Guid id)
   {
     var board = await _boardRepository.GetBoardByIdAsync(id);
-    return board.ToDto();
+    return board?.ToDto();
   }
 
   public async Task<List<BoardDto>> GetAllBoardsAsync()
