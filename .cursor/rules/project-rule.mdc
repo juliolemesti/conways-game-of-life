@@ -1,0 +1,475 @@
+---
+alwaysApply: true
+---
+
+# Conway's Game of Life - Project Rules
+
+## Project Overview
+This is a production-ready implementation of Conway's Game of Life with both frontend (React 19) and backend (C# .NET 7) components. The project follows clean architecture principles and implements comprehensive testing, error handling, and documentation standards.
+
+## Architecture
+
+### Backend (.NET 7)
+- **Clean Architecture** with clear separation of concerns
+- **Core Layer**: Entities (`Board`, `Cell`) and interfaces
+- **Application Layer**: Services, DTOs, and business logic
+- **Infrastructure Layer**: Data persistence with Entity Framework Core
+- **API Layer**: Controllers and HTTP endpoints
+- **Test Layer**: Unit and integration tests
+
+### Frontend (React 19)
+- **Component-based architecture** with TypeScript
+- **State management** for game state and board configuration
+- **API integration** with the backend services
+- **Responsive UI** with modern design patterns
+
+## Core Requirements
+
+### Backend API Endpoints
+1. **POST /api/board** - Upload new board state, returns board ID
+2. **GET /api/board/{id}** - Get current board state
+3. **GET /api/game/{id}/next** - Get next generation of board
+4. **GET /api/game/{id}/generations/{count}** - Get board after X generations
+5. **GET /api/game/{id}/final** - Get final state (with convergence detection)
+6. **PUT /api/board/{id}** - Update board state
+7. **DELETE /api/board/{id}** - Delete board
+
+### Frontend Features
+1. **Interactive Board** - Click to toggle cell states
+2. **Step Controls** - Advance one generation at a time
+3. **Auto-play** - Continuous generation advancement
+4. **Generation Counter** - Advance X number of generations
+5. **Board Management** - Save, load, and manage multiple boards
+6. **Visual Feedback** - Clear indication of alive/dead cells
+
+## Coding Standards
+
+### C# Backend Standards
+- **SOLID Principles** - Single responsibility, dependency injection
+- **Async/Await** - All I/O operations must be asynchronous
+- **Error Handling** - Comprehensive try-catch with meaningful error messages
+- **Logging** - Use ILogger with appropriate log levels
+- **Validation** - Input validation with FluentValidation or Data Annotations
+- **Repository Pattern** - Data access abstraction
+- **DTO Pattern** - Separate data transfer objects from entities
+
+### React Frontend Standards
+- **TypeScript** - Strict type checking enabled
+- **Functional Components** - Use hooks for state management
+- **Custom Hooks** - Extract reusable logic
+- **Error Boundaries** - Graceful error handling
+- **Responsive Design** - Mobile-first approach
+- **Accessibility** - ARIA labels and keyboard navigation
+
+## Data Models
+
+### Board Entity
+```csharp
+public class Board
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public List<Cell> Cells { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
+}
+```
+
+### Cell Entity
+```csharp
+public class Cell
+{
+    public int Row { get; set; }
+    public int Column { get; set; }
+    public Guid BoardId { get; set; }
+    public bool IsAlive { get; set; }
+}
+```
+
+## Game Logic Implementation
+
+### Conway's Rules
+1. **Underpopulation**: Live cell with < 2 neighbors dies
+2. **Survival**: Live cell with 2-3 neighbors survives
+3. **Overpopulation**: Live cell with > 3 neighbors dies
+4. **Reproduction**: Dead cell with exactly 3 neighbors becomes alive
+
+### Algorithm Requirements
+- **Efficient neighbor counting** - O(1) lookup for cell states
+- **Boundary handling** - Proper edge case management
+- **Convergence detection** - Detect when board reaches stable state
+- **Performance optimization** - Handle large boards efficiently
+
+## Testing Requirements
+
+### Unit Tests (80%+ coverage)
+- **Game Logic Tests** - All Conway's rules scenarios
+- **Service Tests** - Board and Game service methods
+- **Repository Tests** - Data access layer
+- **Edge Cases** - Empty boards, single cells, boundary conditions
+
+### Integration Tests
+- **API Endpoints** - Full request/response cycle
+- **Database Operations** - CRUD operations with real database
+- **Error Scenarios** - Invalid inputs, not found cases
+
+### Test Data
+- **Known Patterns** - Glider, blinker, still life patterns
+- **Edge Cases** - Empty boards, single cells, large boards
+- **Performance Tests** - Large board generation times
+
+## Error Handling
+
+### Backend Error Responses
+```json
+{
+  "error": "Board not found",
+  "message": "No board exists with ID: {id}",
+  "statusCode": 404,
+  "timestamp": "2024-01-01T00:00:00Z"
+}
+```
+
+### Frontend Error Handling
+- **User-friendly messages** - Clear, actionable error text
+- **Retry mechanisms** - Automatic retry for transient failures
+- **Loading states** - Visual feedback during operations
+- **Validation feedback** - Real-time input validation
+
+## Performance Requirements
+
+### Backend Performance
+- **Response time** - < 100ms for single generation
+- **Memory usage** - Efficient cell storage and processing
+- **Database queries** - Optimized with proper indexing
+- **Concurrent requests** - Thread-safe operations
+
+### Frontend Performance
+- **Rendering** - Smooth 60fps for animations
+- **Memory management** - Proper cleanup of event listeners
+- **Bundle size** - Optimized production build
+- **API calls** - Debounced user interactions
+
+## Security Considerations
+
+### Input Validation
+- **Board size limits** - Prevent memory exhaustion
+- **Generation limits** - Prevent infinite loops
+- **Data sanitization** - Clean all user inputs
+
+### Data Protection
+- **No sensitive data** - Only game state information
+- **Environment variables** - Configuration management
+- **CORS configuration** - Proper cross-origin setup
+
+## Documentation Requirements
+
+### Code Documentation
+- **XML comments** - All public methods and classes
+- **README updates** - Setup and running instructions
+- **API documentation** - Swagger/OpenAPI integration
+- **Architecture decisions** - Document key design choices
+
+### User Documentation
+- **Setup instructions** - Local development environment
+- **API usage** - Endpoint documentation with examples
+- **Frontend features** - User interface guide
+
+## Deployment Readiness
+
+### Environment Configuration
+- **Development** - Local development settings
+- **Production** - Production-ready configuration
+- **Docker support** - Containerization for both frontend and backend
+
+### Database Management
+- **Migrations** - Entity Framework migrations
+- **Seed data** - Initial test data
+- **Backup strategy** - Data persistence requirements
+
+## Code Quality Checklist
+
+### Before Committing
+- [ ] All tests pass (unit and integration)
+- [ ] Code follows style guidelines
+- [ ] No hardcoded values
+- [ ] Proper error handling
+- [ ] Logging implemented
+- [ ] Documentation updated
+- [ ] Performance considerations addressed
+
+### Code Review Criteria
+- [ ] SOLID principles followed
+- [ ] Clean, readable code
+- [ ] Proper separation of concerns
+- [ ] Comprehensive error handling
+- [ ] Test coverage adequate
+- [ ] Security considerations addressed
+
+## Development Workflow
+
+### Git Strategy
+- **Feature branches** - `feature/board-management`
+- **Meaningful commits** - Clear, descriptive commit messages
+- **Pull requests** - Code review before merging
+- **Main branch** - Always deployable state
+
+### Development Environment
+- **Backend** - .NET 7 SDK, Entity Framework Core, SQLite
+- **Frontend** - Node.js, React 19, TypeScript
+- **Testing** - xUnit, React Testing Library
+- **Database** - SQLite for development, configurable for production
+
+## Success Criteria
+
+### Functional Requirements
+- [ ] All API endpoints implemented and tested
+- [ ] Frontend UI fully functional
+- [ ] Game logic correctly implemented
+- [ ] Board persistence working
+- [ ] Error handling comprehensive
+
+### Non-Functional Requirements
+- [ ] Performance targets met
+- [ ] Code quality standards met
+- [ ] Test coverage > 80%
+- [ ] Documentation complete
+- [ ] Production deployment ready
+
+This project rule serves as the definitive guide for development, ensuring consistency, quality, and completeness throughout the implementation process.# Conway's Game of Life - Project Rules
+
+## Project Overview
+This is a production-ready implementation of Conway's Game of Life with both frontend (React 19) and backend (C# .NET 7) components. The project follows clean architecture principles and implements comprehensive testing, error handling, and documentation standards.
+
+## Architecture
+
+### Backend (.NET 7)
+- **Clean Architecture** with clear separation of concerns
+- **Core Layer**: Entities (`Board`, `Cell`) and interfaces
+- **Application Layer**: Services, DTOs, and business logic
+- **Infrastructure Layer**: Data persistence with Entity Framework Core
+- **API Layer**: Controllers and HTTP endpoints
+- **Test Layer**: Unit and integration tests
+
+### Frontend (React 19)
+- **Component-based architecture** with TypeScript
+- **State management** for game state and board configuration
+- **API integration** with the backend services
+- **Responsive UI** with modern design patterns
+
+## Core Requirements
+
+### Backend API Endpoints
+1. **POST /api/board** - Upload new board state, returns board ID
+2. **GET /api/board/{id}** - Get current board state
+3. **GET /api/game/{id}/next** - Get next generation of board
+4. **GET /api/game/{id}/generations/{count}** - Get board after X generations
+5. **GET /api/game/{id}/final** - Get final state (with convergence detection)
+6. **PUT /api/board/{id}** - Update board state
+7. **DELETE /api/board/{id}** - Delete board
+
+### Frontend Features
+1. **Interactive Board** - Click to toggle cell states
+2. **Step Controls** - Advance one generation at a time
+3. **Auto-play** - Continuous generation advancement
+4. **Generation Counter** - Advance X number of generations
+5. **Board Management** - Save, load, and manage multiple boards
+6. **Visual Feedback** - Clear indication of alive/dead cells
+
+## Coding Standards
+
+### C# Backend Standards
+- **SOLID Principles** - Single responsibility, dependency injection
+- **Async/Await** - All I/O operations must be asynchronous
+- **Error Handling** - Comprehensive try-catch with meaningful error messages
+- **Logging** - Use ILogger with appropriate log levels
+- **Validation** - Input validation with FluentValidation or Data Annotations
+- **Repository Pattern** - Data access abstraction
+- **DTO Pattern** - Separate data transfer objects from entities
+
+### React Frontend Standards
+- **TypeScript** - Strict type checking enabled
+- **Functional Components** - Use hooks for state management
+- **Custom Hooks** - Extract reusable logic
+- **Error Boundaries** - Graceful error handling
+- **Responsive Design** - Mobile-first approach
+- **Accessibility** - ARIA labels and keyboard navigation
+
+## Data Models
+
+### Board Entity
+```csharp
+public class Board
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public List<Cell> Cells { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
+}
+```
+
+### Cell Entity
+```csharp
+public class Cell
+{
+    public int Row { get; set; }
+    public int Column { get; set; }
+    public Guid BoardId { get; set; }
+    public bool IsAlive { get; set; }
+}
+```
+
+## Game Logic Implementation
+
+### Conway's Rules
+1. **Underpopulation**: Live cell with < 2 neighbors dies
+2. **Survival**: Live cell with 2-3 neighbors survives
+3. **Overpopulation**: Live cell with > 3 neighbors dies
+4. **Reproduction**: Dead cell with exactly 3 neighbors becomes alive
+
+### Algorithm Requirements
+- **Efficient neighbor counting** - O(1) lookup for cell states
+- **Boundary handling** - Proper edge case management
+- **Convergence detection** - Detect when board reaches stable state
+- **Performance optimization** - Handle large boards efficiently
+
+## Testing Requirements
+
+### Unit Tests (80%+ coverage)
+- **Game Logic Tests** - All Conway's rules scenarios
+- **Service Tests** - Board and Game service methods
+- **Repository Tests** - Data access layer
+- **Edge Cases** - Empty boards, single cells, boundary conditions
+
+### Integration Tests
+- **API Endpoints** - Full request/response cycle
+- **Database Operations** - CRUD operations with real database
+- **Error Scenarios** - Invalid inputs, not found cases
+
+### Test Data
+- **Known Patterns** - Glider, blinker, still life patterns
+- **Edge Cases** - Empty boards, single cells, large boards
+- **Performance Tests** - Large board generation times
+
+## Error Handling
+
+### Backend Error Responses
+```json
+{
+  "error": "Board not found",
+  "message": "No board exists with ID: {id}",
+  "statusCode": 404,
+  "timestamp": "2024-01-01T00:00:00Z"
+}
+```
+
+### Frontend Error Handling
+- **User-friendly messages** - Clear, actionable error text
+- **Retry mechanisms** - Automatic retry for transient failures
+- **Loading states** - Visual feedback during operations
+- **Validation feedback** - Real-time input validation
+
+## Performance Requirements
+
+### Backend Performance
+- **Response time** - < 100ms for single generation
+- **Memory usage** - Efficient cell storage and processing
+- **Database queries** - Optimized with proper indexing
+- **Concurrent requests** - Thread-safe operations
+
+### Frontend Performance
+- **Rendering** - Smooth 60fps for animations
+- **Memory management** - Proper cleanup of event listeners
+- **Bundle size** - Optimized production build
+- **API calls** - Debounced user interactions
+
+## Security Considerations
+
+### Input Validation
+- **Board size limits** - Prevent memory exhaustion
+- **Generation limits** - Prevent infinite loops
+- **Data sanitization** - Clean all user inputs
+
+### Data Protection
+- **No sensitive data** - Only game state information
+- **Environment variables** - Configuration management
+- **CORS configuration** - Proper cross-origin setup
+
+## Documentation Requirements
+
+### Code Documentation
+- **XML comments** - All public methods and classes
+- **README updates** - Setup and running instructions
+- **API documentation** - Swagger/OpenAPI integration
+- **Architecture decisions** - Document key design choices
+
+### User Documentation
+- **Setup instructions** - Local development environment
+- **API usage** - Endpoint documentation with examples
+- **Frontend features** - User interface guide
+
+## Deployment Readiness
+
+### Environment Configuration
+- **Development** - Local development settings
+- **Production** - Production-ready configuration
+- **Docker support** - Containerization for both frontend and backend
+
+### Database Management
+- **Migrations** - Entity Framework migrations
+- **Seed data** - Initial test data
+- **Backup strategy** - Data persistence requirements
+
+## Code Quality Checklist
+
+### Before Committing
+- [ ] All tests pass (unit and integration)
+- [ ] Code follows style guidelines
+- [ ] No hardcoded values
+- [ ] Proper error handling
+- [ ] Logging implemented
+- [ ] Documentation updated
+- [ ] Performance considerations addressed
+
+### Code Review Criteria
+- [ ] SOLID principles followed
+- [ ] Clean, readable code
+- [ ] Proper separation of concerns
+- [ ] Comprehensive error handling
+- [ ] Test coverage adequate
+- [ ] Security considerations addressed
+
+## Development Workflow
+
+### Git Strategy
+- **Feature branches** - `feature/board-management`
+- **Meaningful commits** - Clear, descriptive commit messages
+- **Pull requests** - Code review before merging
+- **Main branch** - Always deployable state
+
+### Development Environment
+- **Backend** - .NET 7 SDK, Entity Framework Core, SQLite
+- **Frontend** - Node.js, React 19, TypeScript
+- **Testing** - xUnit, React Testing Library
+- **Database** - SQLite for development, configurable for production
+
+## Success Criteria
+
+### Functional Requirements
+- [ ] All API endpoints implemented and tested
+- [ ] Frontend UI fully functional
+- [ ] Game logic correctly implemented
+- [ ] Board persistence working
+- [ ] Error handling comprehensive
+
+### Non-Functional Requirements
+- [ ] Performance targets met
+- [ ] Code quality standards met
+- [ ] Test coverage > 80%
+- [ ] Documentation complete
+- [ ] Production deployment ready
+
+This project rule serves as the definitive guide for development, ensuring consistency, quality, and completeness throughout the implementation process.

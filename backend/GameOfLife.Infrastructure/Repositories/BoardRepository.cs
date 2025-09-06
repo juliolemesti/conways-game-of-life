@@ -16,12 +16,12 @@ public class BoardRepository : IBoardRepository
 
   public async Task<Board?> GetBoardByIdAsync(Guid id)
   {
-    return await _context.Boards.Include(b => b.Cells).FirstOrDefaultAsync(b => b.Id == id);
+    return await _context.Boards.FirstOrDefaultAsync(b => b.Id == id);
   }
 
   public async Task<List<Board>> GetAllBoardsAsync()
   {
-    return await _context.Boards.Include(b => b.Cells).ToListAsync();
+    return await _context.Boards.ToListAsync();
   }
 
   public async Task<Board> CreateBoardAsync(Board board)
@@ -33,14 +33,14 @@ public class BoardRepository : IBoardRepository
 
   public async Task<bool> UpdateBoardAsync(Board board)
   {
-    var existingBoard = await _context.Boards.Include(b => b.Cells).FirstOrDefaultAsync(b => b.Id == board.Id);
-    if (existingBoard == null)
-    {
-      return false;
-    }
+    var existingBoard = await _context.Boards.FirstOrDefaultAsync(b => b.Id == board.Id);
+    if (existingBoard == null) return false;
 
     existingBoard.Name = board.Name;
-    existingBoard.Cells = board.Cells;
+    existingBoard.Width = board.Width;
+    existingBoard.Height = board.Height;
+    existingBoard.BoardState = board.BoardState;
+
     await _context.SaveChangesAsync();
     return true;
   }
@@ -48,10 +48,7 @@ public class BoardRepository : IBoardRepository
   public async Task<bool> DeleteBoardAsync(Guid id)
   {
     var board = await _context.Boards.FindAsync(id);
-    if (board == null)
-    {
-      return false;
-    }
+    if (board == null) return false;
 
     _context.Boards.Remove(board);
     await _context.SaveChangesAsync();

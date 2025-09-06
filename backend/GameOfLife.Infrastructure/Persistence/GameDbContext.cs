@@ -18,13 +18,9 @@ public class GameDbContext : DbContext
       entity.HasKey(e => e.Id);
       entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
       entity.Property(e => e.CreatedAt).IsRequired();
-      entity.HasMany(e => e.Cells).WithOne().HasForeignKey("BoardId").IsRequired();
-    });
-
-    modelBuilder.Entity<Cell>(entity =>
-    {
-      entity.HasKey(e => new { e.Row, e.Column, e.BoardId });
-      entity.Property(e => e.IsAlive);
+      entity.Property(e => e.BoardState).IsRequired();
+      entity.Property(e => e.Width).IsRequired();
+      entity.Property(e => e.Height).IsRequired();
     });
 
     base.OnModelCreating(modelBuilder);

@@ -33,12 +33,9 @@ public class BoardService : IBoardService
     {
       Id = Guid.NewGuid(),
       Name = input.Name,
-      Cells = input.Cells.Select(c => new Cell
-      {
-        Row = c.Row,
-        Column = c.Column,
-        IsAlive = c.IsAlive
-      }).ToList()
+      Width = input.Width,
+      Height = input.Height,
+      Grid = input.Grid
     };
 
     await _boardRepository.CreateBoardAsync(board);
@@ -46,20 +43,18 @@ public class BoardService : IBoardService
     return board.ToDto();
   }
 
-  public async Task<bool> UpdateBoardAsync(BoardDto board)
+  public async Task<bool> UpdateBoardAsync(BoardDto input)
   {
-    var existingBoard = await _boardRepository.GetBoardByIdAsync(board.Id);
-    if (existingBoard == null) return false;
-
-    existingBoard.Name = board.Name;
-    existingBoard.Cells = board.Cells.Select(c => new Cell
+    var board = new Board
     {
-      Row = c.Row,
-      Column = c.Column,
-      IsAlive = c.IsAlive
-    }).ToList();
+      Id = input.Id,
+      Name = input.Name,
+      Width = input.Width,
+      Height = input.Height,
+      Grid = input.Grid
+    };
 
-    return await _boardRepository.UpdateBoardAsync(existingBoard);
+    return await _boardRepository.UpdateBoardAsync(board);
   }
 
   public async Task<bool> DeleteBoardAsync(Guid id)

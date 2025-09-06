@@ -11,17 +11,9 @@ public static class BoardExtensions
     {
       Id = board.Id,
       Name = board.Name,
-      Cells = board.Cells.Select(c => c.ToDto()).ToList()
-    };
-  }
-
-  public static CellDto ToDto(this Cell cell)
-  {
-    return new CellDto
-    {
-      Row = cell.Row,
-      Column = cell.Column,
-      IsAlive = cell.IsAlive
+      Width = board.Width,
+      Height = board.Height,
+      Grid = board.Grid
     };
   }
 }
