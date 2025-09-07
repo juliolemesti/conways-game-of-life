@@ -37,7 +37,7 @@ public static class TestData
     { centerPos + 1, centerPos }
   };
 
-  public static int[,] CrossPatternSecondGeneration(int centerPos) => new int[,]
+  public static int[,] SquarePattern(int centerPos) => new int[,]
   {
     { centerPos - 1, centerPos - 1 },
     { centerPos - 1, centerPos },
@@ -49,15 +49,21 @@ public static class TestData
     { centerPos + 1, centerPos + 1 }
   };
 
-  public static int[,] GliderPattern(int centerPos) => new int[,]
+  public static int[,] DiamondPattern(int centerPos) => new int[,]
   {
-    { centerPos - 1, centerPos },
-    { centerPos, centerPos + 1 },
-    { centerPos + 1, centerPos - 1 }, { centerPos + 1, centerPos }, { centerPos + 1, centerPos + 1 }
+    { centerPos - 2, centerPos },
+    { centerPos - 1, centerPos - 1 }, { centerPos - 1, centerPos + 1 },
+    { centerPos, centerPos - 2 }, { centerPos, centerPos + 2 },
+    { centerPos + 1, centerPos - 1 }, { centerPos + 1, centerPos + 1 },
+    { centerPos + 2, centerPos }
   };
 
-  public static int[,] BlinkerPattern(int centerPos) => new int[,]
+  public static int[,] HollowDiamondPattern(int centerPos) => new int[,]
   {
-    { centerPos, centerPos - 1 }, { centerPos, centerPos }, { centerPos, centerPos + 1 }
+    { centerPos - 2, centerPos },
+    { centerPos - 1, centerPos - 1 }, { centerPos - 1, centerPos }, { centerPos - 1, centerPos + 1 },
+    { centerPos, centerPos - 2 }, { centerPos, centerPos - 1 }, { centerPos, centerPos + 1 }, { centerPos, centerPos + 2 },
+    { centerPos + 1, centerPos - 1 }, { centerPos + 1, centerPos }, { centerPos + 1, centerPos + 1 },
+    { centerPos + 2, centerPos }
   };
 }

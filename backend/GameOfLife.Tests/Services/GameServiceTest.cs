@@ -12,7 +12,6 @@ public class GameServiceTest
   private const int BOARD_SIZE = 13; //Always an odd number
   private const int CENTER_POS = (BOARD_SIZE - 1) / 2;
   private readonly Board _testBoard;
-  private readonly Mock<IGameService> _mockGameService;
   private readonly GameService _gameService;
 
   public GameServiceTest()
@@ -22,14 +21,10 @@ public class GameServiceTest
     {
       Id = Guid.NewGuid(),
       Name = "Test Board",
-      Width = BOARD_SIZE,
-      Height = BOARD_SIZE,
+      BoardSize = BOARD_SIZE,
       Grid = TestUtils.CreateTestGrid(BOARD_SIZE, crossPattern)
     };
 
-    _mockGameService = new Mock<IGameService>();
-
-    // Create a real logger that outputs to console
     var loggerFactory = LoggerFactory.Create(builder =>
       builder.AddConsole().SetMinimumLevel(LogLevel.Trace));
     var logger = loggerFactory.CreateLogger<GameService>();
@@ -41,14 +36,37 @@ public class GameServiceTest
   {
     var result = _gameService.GetNextGeneration(_testBoard);
 
-    var crossPatternSecondGeneration = TestData.CrossPatternSecondGeneration(CENTER_POS);
+    var crossPatternSecondGeneration = TestData.SquarePattern(CENTER_POS);
     var crossPatternSecondGenerationGrid = TestUtils.CreateTestGrid(BOARD_SIZE, crossPatternSecondGeneration);
     Assert.Equal(result.Grid, crossPatternSecondGenerationGrid);
+
+    result = _gameService.GetNextGeneration(result);
+    var DiamondPattern = TestData.DiamondPattern(CENTER_POS);
+    var DiamondPatternGrid = TestUtils.CreateTestGrid(BOARD_SIZE, DiamondPattern);
+    Assert.Equal(result.Grid, DiamondPatternGrid);
+
+    result = _gameService.GetNextGeneration(result);
+    var hollowDiamondPattern = TestData.HollowDiamondPattern(CENTER_POS);
+    var hollowDiamondGrid = TestUtils.CreateTestGrid(BOARD_SIZE, hollowDiamondPattern);
+    Assert.Equal(result.Grid, hollowDiamondGrid);
   }
 
   [Fact]
-  public void TestGetXNextGenerations()
+  public void TestGet2NextGenerations()
   {
+    var result = _gameService.GetXNextGenerations(_testBoard, 2);
+    var DiamondPattern = TestData.DiamondPattern(CENTER_POS);
+    var DiamondPatternGrid = TestUtils.CreateTestGrid(BOARD_SIZE, DiamondPattern);
+    Assert.Equal(result.Grid, DiamondPatternGrid);
+  }
+
+  [Fact]
+  public void TestGet3NextGenerations()
+  {
+    var result = _gameService.GetXNextGenerations(_testBoard, 3);
+    var hollowDiamondPattern = TestData.HollowDiamondPattern(CENTER_POS);
+    var hollowDiamondGrid = TestUtils.CreateTestGrid(BOARD_SIZE, hollowDiamondPattern);
+    Assert.Equal(result.Grid, hollowDiamondGrid);
   }
 
   [Fact]
@@ -65,8 +83,6 @@ public class CountAliveNeighborsTest
   private const int CENTER_POS = (BOARD_SIZE - 1) / 2;
   private readonly bool[][] _testGrid;
 
-
-  private readonly Mock<IGameService> _mockGameService;
   private readonly GameService _gameService;
 
   public CountAliveNeighborsTest()
@@ -74,9 +90,6 @@ public class CountAliveNeighborsTest
     var crossPattern = TestData.CrossPattern(CENTER_POS);
     _testGrid = TestUtils.CreateTestGrid(BOARD_SIZE, crossPattern);
 
-    _mockGameService = new Mock<IGameService>();
-
-    // Create a real logger that outputs to console
     var loggerFactory = LoggerFactory.Create(builder =>
       builder.AddConsole().SetMinimumLevel(LogLevel.Trace));
     var logger = loggerFactory.CreateLogger<GameService>();
