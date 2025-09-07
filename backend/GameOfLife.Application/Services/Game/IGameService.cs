@@ -7,6 +7,7 @@ namespace GameOfLife.Application.Services;
 
 public interface IGameService
 {
+  public Board GetXNextGenerations(Board currentBoard, int x);
   public Board GetNextGeneration(Board currentBoard);
   public int? CountAliveNeighbors(bool[][] grid, int row, int col);
 }

@@ -44,6 +44,24 @@ public class GameService : IGameService
     return currentBoard;
   }
 
+  public Board GetXNextGenerations(Board currentBoard, int x)
+  {
+    var grid = currentBoard.Grid;
+    if (grid == null)
+    {
+      _logger.LogWarning("Board {BoardId} has null grid", currentBoard.Id);
+      return currentBoard;
+    }
+
+    for (int i = 0; i < x; i++)
+    {
+      currentBoard = GetNextGeneration(currentBoard);
+    }
+
+    return currentBoard;
+  }
+
+
   public int? CountAliveNeighbors(bool[][] grid, int row, int col)
   {
     _logger.LogTrace("Board State: {BoardState}", grid);

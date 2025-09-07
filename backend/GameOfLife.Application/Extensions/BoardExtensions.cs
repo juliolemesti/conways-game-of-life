@@ -11,8 +11,7 @@ public static class BoardExtensions
     {
       Id = board.Id,
       Name = board.Name,
-      Width = board.Width,
-      Height = board.Height,
+      BoardSize = board.BoardSize,
       Grid = board.Grid
     };
   }

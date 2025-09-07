@@ -33,8 +33,7 @@ public class BoardService : IBoardService
     {
       Id = Guid.NewGuid(),
       Name = input.Name,
-      Width = input.Width,
-      Height = input.Height,
+      BoardSize = input.BoardSize,
       Grid = input.Grid
     };
 
@@ -49,8 +48,7 @@ public class BoardService : IBoardService
     {
       Id = input.Id,
       Name = input.Name,
-      Width = input.Width,
-      Height = input.Height,
+      BoardSize = input.BoardSize,
       Grid = input.Grid
     };
 
