@@ -104,7 +104,7 @@ public class GameService : IGameService
       // Detect empty state
       if (nextGeneration.ConvergenceState == BoardConvergenceState.Empty)
       {
-        _logger.LogInformation("Board {BoardName} has reached an empty state after {Generations} generations", currentBoard.Name, nextGeneration.Generation);
+        _logger.LogInformation("Board {BoardName} has reached {State} after {Generations} generations", currentBoard.Name, nextGeneration.ConvergenceState, nextGeneration.Generation);
         currentBoard = nextGeneration;
         break;
       }
@@ -112,7 +112,8 @@ public class GameService : IGameService
       // Detect still life
       if (nextGeneration.ConvergenceState == BoardConvergenceState.StillLife)
       {
-        _logger.LogInformation("Board {BoardName} has reached a stable state after {Generations} generations", currentBoard.Name, currentBoard.Generation);
+        currentBoard.ConvergenceState = nextGeneration.ConvergenceState;
+        _logger.LogInformation("Board {BoardName} has reached {State} state after {Generations} generations", currentBoard.Name, currentBoard.ConvergenceState, currentBoard.Generation);
         break;
       }
 
@@ -142,7 +143,10 @@ public class GameService : IGameService
 
     } while (currentBoard.Generation < maxGenerations);
 
-    currentBoard.ConvergenceState = BoardConvergenceState.MaxGeneration;
+    if (currentBoard.ConvergenceState == BoardConvergenceState.None && currentBoard.Generation >= maxGenerations)
+    {
+      currentBoard.ConvergenceState = BoardConvergenceState.MaxGeneration;
+    }
 
     stopwatch.Stop();
     _logger.LogInformation("GetFinalGeneration completed in {ElapsedMs}ms | Board: {Board} | Generations: {Generations}",
