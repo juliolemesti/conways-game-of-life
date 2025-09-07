@@ -68,7 +68,7 @@ public static class TestData
     { centerPos, centerPos + 4},
     { centerPos, centerPos + 5}
   };
-  
+
   public static int[,] LineWithLength6Pattern11thGenerationState(int centerPos) => new int[,]
   {
     { centerPos -1, centerPos - 1}, { centerPos -1, centerPos + 6},
@@ -96,7 +96,7 @@ public static class TestData
   };
 
   public static int[,] LineWithLength7PatternFinalState(int centerPos) => new int[,]
-    {
+  {
     // Top hollow diamond
     { centerPos - 6, centerPos },
     { centerPos - 5, centerPos - 1 }, { centerPos - 5, centerPos + 1 },
@@ -118,5 +118,6 @@ public static class TestData
     { centerPos + 5, centerPos - 1 }, { centerPos + 5, centerPos + 1 },
     { centerPos + 4, centerPos - 1 }, { centerPos + 4, centerPos + 1 },
     { centerPos + 3, centerPos },
-    };
+  };
+
 }

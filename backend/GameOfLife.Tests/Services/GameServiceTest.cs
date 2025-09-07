@@ -118,7 +118,7 @@ public class GameServiceTest
   [Fact]
   public void TestGetFinalBoardState_BoardReachesMaximumGenerationsBeforeReachingStableState()
   {
-    var boardSize = 23;
+    var boardSize = 33;
     var centerPos = (boardSize - 1) / 2;
     var maxGenerations = 11;
     var board = new Board
@@ -132,7 +132,6 @@ public class GameServiceTest
     Assert.Equal(result.Grid, expectedGrid);
     Assert.Equal(maxGenerations, result.Generation);
   }
-
 }
 
 public class CountAliveNeighborsTest
