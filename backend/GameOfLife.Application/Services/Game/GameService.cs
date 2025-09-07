@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using DeepEqual.Syntax;
 using GameOfLife.Core.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -15,7 +17,7 @@ public class GameService : IGameService
   public Board GetNextGeneration(Board currentBoard)
   {
     var grid = currentBoard.Grid;
-    if (grid == null)
+    if (grid == null || currentBoard.IsEmptyState == true)
     {
       _logger.LogWarning("Board {BoardId} has null grid", currentBoard.Id);
       return currentBoard;
@@ -39,9 +41,22 @@ public class GameService : IGameService
       }
     }
 
-    currentBoard.Grid = newGrid;
+    var board = new Board
+    {
+      Id = currentBoard.Id,
+      Name = currentBoard.Name,
+      BoardSize = currentBoard.BoardSize,
+      Grid = newGrid,
+      Generation = currentBoard.Generation + 1
+    };
 
-    return currentBoard;
+    // Detect still life
+    if (board.Grid.IsDeepEqual(currentBoard.Grid))
+    {
+      board.ConvergenceState = BoardConvergenceState.StillLife;
+    }
+
+    return board;
   }
 
   public Board GetXNextGenerations(Board currentBoard, int x)
@@ -49,22 +64,100 @@ public class GameService : IGameService
     var grid = currentBoard.Grid;
     if (grid == null)
     {
-      _logger.LogWarning("Board {BoardId} has null grid", currentBoard.Id);
+      _logger.LogWarning("Board {BoardName} has null grid", currentBoard.Name);
       return currentBoard;
     }
 
-    for (int i = 0; i < x; i++)
+    return GetFinalGeneration(currentBoard, x + 1);
+  }
+
+  /**
+  * Get the final generation of a board
+  * @param currentBoard - The current board
+  * @param maxGenerations - The maximum number of generations to generate
+  * @return The final generation of the board
+  */
+  public Board GetFinalGeneration(Board currentBoard, int maxGenerations = 1000)
+  {
+    if (currentBoard.Grid == null)
     {
-      currentBoard = GetNextGeneration(currentBoard);
+      _logger.LogWarning("Board {BoardName} has null grid", currentBoard.Name);
+      return currentBoard;
     }
+
+    var stopwatch = Stopwatch.StartNew();
+
+    // Keep track of the last two generations to detect stability
+    var lastGenerationsQueue = new Queue<bool[][]>();
+    lastGenerationsQueue.Enqueue(currentBoard.Grid);
+    var maxCycleDetection = 30;
+
+    do
+    {
+      var nextGeneration = GetNextGeneration(currentBoard);
+      if (nextGeneration.Grid == null)
+      {
+        _logger.LogWarning("Next generation has null grid");
+        break;
+      }
+
+      // Detect empty state
+      if (nextGeneration.ConvergenceState == BoardConvergenceState.Empty)
+      {
+        _logger.LogInformation("Board {BoardName} has reached an empty state after {Generations} generations", currentBoard.Name, nextGeneration.Generation);
+        currentBoard = nextGeneration;
+        break;
+      }
+
+      // Detect still life
+      if (nextGeneration.ConvergenceState == BoardConvergenceState.StillLife)
+      {
+        _logger.LogInformation("Board {BoardName} has reached a stable state after {Generations} generations", currentBoard.Name, currentBoard.Generation);
+        break;
+      }
+
+      // Check for oscillators up to the last 30 generations
+      if (lastGenerationsQueue.Count == 2)
+      {
+        foreach (var previousGrid in lastGenerationsQueue)
+        {
+          if (nextGeneration.Grid.IsDeepEqual(previousGrid))
+          {
+            _logger.LogInformation("Board {BoardName} reached oscillating state after {Generations} generations", currentBoard.Name, nextGeneration.Generation);
+
+            currentBoard = nextGeneration;
+            break;
+          }
+        }
+      }
+
+      // Maintain queue size
+      lastGenerationsQueue.Enqueue(nextGeneration.Grid);
+      if (lastGenerationsQueue.Count > maxCycleDetection)
+      {
+        lastGenerationsQueue.Dequeue();
+      }
+
+      currentBoard = nextGeneration;
+
+    } while (currentBoard.Generation < maxGenerations);
+
+    currentBoard.ConvergenceState = BoardConvergenceState.MaxGeneration;
+
+    stopwatch.Stop();
+    _logger.LogInformation("GetFinalGeneration completed in {ElapsedMs}ms | Board: {Board} | Generations: {Generations}",
+      stopwatch.ElapsedMilliseconds, currentBoard.Name, currentBoard.Generation);
 
     return currentBoard;
   }
 
-
-  public int? CountAliveNeighbors(bool[][] grid, int row, int col)
+  public int CountAliveNeighbors(bool[][] grid, int row, int col)
   {
-    _logger.LogTrace("Board State: {BoardState}", grid);
+    if (grid == null)
+    {
+      _logger.LogWarning("Grid is null");
+      return 0;
+    }
 
     // Generate a 2D array of all neighbor positions for a given cell (row, col)
     int[,] neighborOffsets = new int[,]
@@ -74,30 +167,17 @@ public class GameService : IGameService
       { 1, -1}, { 1, 0}, { 1, 1}
     };
 
-    if (grid == null)
-    {
-      _logger.LogWarning("Grid is null");
-      return null;
-    }
-
     int aliveNeighbors = 0;
     for (int i = 0; i < neighborOffsets.GetLength(0); i++)
     {
       int newRow = row + neighborOffsets[i, 0];
       int newCol = col + neighborOffsets[i, 1];
 
-      _logger.LogTrace("Checking neighbor at offset ({OffsetRow}, {OffsetCol}) -> position ({NewRow}, {NewCol})",
-        neighborOffsets[i, 0], neighborOffsets[i, 1], newRow, newCol);
-
       if (newRow >= 0 && newRow < grid.Length && newCol >= 0 && newCol < grid[0].Length && grid[newRow][newCol])
       {
         aliveNeighbors++;
-        _logger.LogTrace("Found alive neighbor at ({NewRow}, {NewCol})", newRow, newCol);
       }
     }
-
-    _logger.LogDebug("Found {AliveNeighbors} alive neighbors for position ({Row}, {Col})",
-      aliveNeighbors, row, col);
 
     return aliveNeighbors;
   }
