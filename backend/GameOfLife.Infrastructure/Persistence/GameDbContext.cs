@@ -19,8 +19,7 @@ public class GameDbContext : DbContext
       entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
       entity.Property(e => e.CreatedAt).IsRequired();
       entity.Property(e => e.BoardState).IsRequired();
-      entity.Property(e => e.Width).IsRequired();
-      entity.Property(e => e.Height).IsRequired();
+      entity.Property(e => e.BoardSize).IsRequired();
     });
 
     base.OnModelCreating(modelBuilder);

@@ -6,6 +6,8 @@ namespace GameOfLife.Infrastructure.Persistence;
 public static class DbInitializer
 {
 
+  private static int DEFAULT_BOARD_SIZE = 13;
+
   public static void Initialize(GameDbContext context)
   {
     context.Database.EnsureCreated();
@@ -13,11 +15,11 @@ public static class DbInitializer
     if (context.Boards.Any()) { return; }
 
     // Create an 8x8 board with random isAlive
-    var grid = new bool[8][];
-    for (int x = 0; x < 8; x++)
+    var grid = new bool[DEFAULT_BOARD_SIZE][];
+    for (int x = 0; x < DEFAULT_BOARD_SIZE; x++)
     {
-      grid[x] = new bool[8];
-      for (int y = 0; y < 8; y++)
+      grid[x] = new bool[DEFAULT_BOARD_SIZE];
+      for (int y = 0; y < DEFAULT_BOARD_SIZE; y++)
       {
         bool isAlive = new Random().Next(2) == 0;
         grid[x][y] = isAlive;
@@ -26,7 +28,7 @@ public static class DbInitializer
 
     var defaultBoards = new[]
     {
-      new Board { Id = Guid.NewGuid(), Name = "Default 8x8 Board", Width = 8, Height = 8, Grid = grid }
+      new Board { Id = Guid.NewGuid(), Name = "Default 8x8 Board", BoardSize = DEFAULT_BOARD_SIZE, Grid = grid }
     };
 
     context.Boards.AddRange(defaultBoards);

@@ -8,8 +8,7 @@ public class Board
 {
   public Guid Id { get; set; }
   public string Name { get; set; } = string.Empty;
-  public int Width { get; set; } = 8;
-  public int Height { get; set; } = 8;
+  public int BoardSize { get; set; } = 13;
   public string BoardState { get; set; } = string.Empty;
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
   [NotMapped]
@@ -32,7 +31,7 @@ public class Board
 
   public void SetGrid(bool[][]? grid)
   {
-    if (grid == null || grid.Length != Width || grid[0].Length != Height)
+    if (grid == null || grid.Length != BoardSize || grid[0].Length != BoardSize)
     {
       throw new Exception($"Grid dimensions do not match board dimensions {Id}#{Name}");
     }

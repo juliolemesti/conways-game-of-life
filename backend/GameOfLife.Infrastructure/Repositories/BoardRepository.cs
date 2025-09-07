@@ -37,8 +37,7 @@ public class BoardRepository : IBoardRepository
     if (existingBoard == null) return false;
 
     existingBoard.Name = board.Name;
-    existingBoard.Width = board.Width;
-    existingBoard.Height = board.Height;
+    existingBoard.BoardSize = board.BoardSize;
     existingBoard.BoardState = board.BoardState;
 
     await _context.SaveChangesAsync();
