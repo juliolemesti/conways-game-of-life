@@ -149,8 +149,8 @@ public class GameService : IGameService
     }
 
     stopwatch.Stop();
-    _logger.LogInformation("GetFinalGeneration completed in {ElapsedMs}ms | Board: {Board} | Generations: {Generations}",
-      stopwatch.ElapsedMilliseconds, currentBoard.Name, currentBoard.Generation);
+    _logger.LogInformation("GetFinalGeneration completed in {ElapsedMs}ms | Board: {Board} | Generations: {Generations} | State: {State}",
+      stopwatch.ElapsedMilliseconds, currentBoard.Name, currentBoard.Generation, currentBoard.ConvergenceState);
 
     return currentBoard;
   }
