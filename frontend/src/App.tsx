@@ -1,15 +1,14 @@
 import './App.css';
-import GameBoard from './pages/GameBoard/GameBoard';
+import GameBoardPage from './pages/GameBoardPage';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
         <h1>Conway's Game of Life</h1>
-        <p>Click cells to toggle their state and create patterns</p>
       </header>
       <main className="app-main">
-        <GameBoard />
+        <GameBoardPage />
       </main>
     </div>
   );

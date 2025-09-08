@@ -1,11 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from "react";
 import './GameBoard.css';
+import { Cell } from "./Cell";
 
 interface GameBoardProps {
   initialSize?: number;
 }
 
-const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
+export const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
   const [boardSize, setBoardSize] = useState(initialSize);
 
   // Initialize board with all dead cells
@@ -24,10 +25,21 @@ const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
     setCells(initializeBoard(boardSize));
   }, [initializeBoard, boardSize]);
 
+  const handleCellClick = useCallback((row: number, column: number) => {
+    setCells(prevCells => {
+      const newCells = prevCells.map(row => [...row]);
+      newCells[row][column] = !newCells[row][column];
+      return newCells;
+    });
+  }, []);
+
+  const gridStyle = useMemo(() => ({
+    gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
+    gridTemplateRows: `repeat(${boardSize}, 1fr)`
+  }), [boardSize]);
+
   return (
     <div className="game-board-container">
-      <h1>Game Board</h1>
-
       <div className="game-board-controls">
         <div className="size-control">
           <label htmlFor="board-size">Board Size:</label>
@@ -54,8 +66,32 @@ const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
           </button>
         </div>
       </div>
+
+
+      <div
+        className="game-board-grid"
+        style={gridStyle}
+        role="grid"
+        aria-label={`Game of Life board, ${boardSize} by ${boardSize} cells`}
+      >
+        {cells.map((row, rowIndex) =>
+          row.map((isAlive, columnIndex) => (
+            <Cell
+              key={`${rowIndex}-${columnIndex}`}
+              isAlive={isAlive}
+              row={rowIndex}
+              column={columnIndex}
+              onCellClick={handleCellClick}
+            />
+          ))
+        )}
+      </div>
+
+      <div className="board-info">
+        <p>Click cells to toggle their state</p>
+        <p>Board Size: {boardSize}x{boardSize}</p>
+        <p>Alive Cells: {cells.flat().filter(Boolean).length}</p>
+      </div>
     </div>
   );
 };
-
-export default GameBoard;

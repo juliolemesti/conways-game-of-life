@@ -1,10 +1,9 @@
 .App {
   min-height: 100vh;
   background-color: #f8f9fa;
-  text-align: center;
 }
 
-.app-header {
+.App-header {
   background-color: #343a40;
   color: white;
   padding: 2rem 0;
@@ -12,19 +11,19 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.app-header h1 {
+.App-header h1 {
   margin: 0 0 0.5rem 0;
   font-size: 2.5rem;
   font-weight: 300;
 }
 
-.app-header p {
+.App-header p {
   margin: 0;
   font-size: 1.1rem;
   opacity: 0.8;
 }
 
-.app-main {
+.App-main {
   padding: 2rem 0;
 }
 

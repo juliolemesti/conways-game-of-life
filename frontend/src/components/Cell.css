@@ -1,0 +1,51 @@
+.cell {
+  background-color: #f8f9fa;
+  border: none;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  min-width: 20px;
+}
+
+.cell:hover {
+  background-color: #e9ecef;
+  transform: scale(0.95);
+}
+
+.cell:focus {
+  outline: 2px solid #007bff;
+  outline-offset: -2px;
+}
+
+.cell--alive {
+  background-color: #28a745;
+}
+
+.cell--alive:hover {
+  background-color: #218838;
+}
+
+.cell--dead {
+  background-color: #f8f9fa;
+}
+
+.cell--dead:hover {
+  background-color: #e9ecef;
+}
+
+@media (max-width: 768px) {
+  .cell {
+    min-height: 15px;
+    min-width: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cell {
+    min-height: 12px;
+    min-width: 12px;
+  }
+}
