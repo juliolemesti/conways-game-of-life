@@ -1,4 +1,5 @@
 import './App.css';
+import GameBoard from './pages/GameBoard/GameBoard';
 
 function App() {
   return (
@@ -8,7 +9,7 @@ function App() {
         <p>Click cells to toggle their state and create patterns</p>
       </header>
       <main className="app-main">
-        
+        <GameBoard />
       </main>
     </div>
   );

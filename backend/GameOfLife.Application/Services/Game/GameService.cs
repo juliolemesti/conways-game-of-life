@@ -177,7 +177,7 @@ public class GameService : IGameService
       int newRow = row + neighborOffsets[i, 0];
       int newCol = col + neighborOffsets[i, 1];
 
-      if (newRow >= 0 && newRow < grid.Length && newCol >= 0 && newCol < grid[0].Length && grid[newRow][newCol])
+      if (newRow >= 0 && newRow < grid.Length && newCol >= 0 && newCol < grid[newRow].Length && grid[newRow][newCol])
       {
         aliveNeighbors++;
       }
