@@ -1,0 +1,1 @@
+export const DEFAUL_BOARD_SIZE = 20;

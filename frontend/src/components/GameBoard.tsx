@@ -1,36 +1,46 @@
-import React, { useCallback, useMemo, useState } from "react";
-import './GameBoard.css';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useBoardSync } from "../hooks/useBoardSync";
+import { BoardUtils } from "../utils/boardUtils";
+import { DEFAUL_BOARD_SIZE } from "../utils/constants";
 import { Cell } from "./Cell";
+import './GameBoard.css';
 
 interface GameBoardProps {
   initialSize?: number;
 }
 
-export const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
-  const [boardSize, setBoardSize] = useState(initialSize);
+export const GameBoard: React.FC<GameBoardProps> = ({ initialSize = DEFAUL_BOARD_SIZE }) => {
+  const { board, loading, error, updateBoard, createBoard, fetchBoard } = useBoardSync();
+  const { id, boardSize, generation } = board ?? {};
 
-  // Initialize board with all dead cells
-  const initializeBoard = useCallback((size: number): boolean[][] => {
-    return Array(size).fill(null).map(() => Array(size).fill(false));
-  }, []);
+  const [grid, setGrid] = useState<boolean[][]>(board?.grid ?? BoardUtils.initializeGrid());
 
-  const [cells, setCells] = useState<boolean[][]>(() => initializeBoard(boardSize));
+  useEffect(() => {
+    setGrid(board?.grid ?? []);
+  }, [board?.grid]);
 
   const handleSizeChange = useCallback((newSize: number) => {
-    setBoardSize(newSize);
-    setCells(initializeBoard(newSize));
-  }, [initializeBoard]);
+  }, []);
 
   const handleClearBoard = useCallback(() => {
-    setCells(initializeBoard(boardSize));
-  }, [initializeBoard, boardSize]);
+    setGrid(BoardUtils.initializeGrid());
+  }, []);
 
   const handleCellClick = useCallback((row: number, column: number) => {
-    setCells(prevCells => {
-      const newCells = prevCells.map(row => [...row]);
-      newCells[row][column] = !newCells[row][column];
-      return newCells;
-    });
+    const newGrid = grid.map((rowArray, rowIndex) =>
+      rowArray.map((isAlive, columnIndex) =>
+        (rowIndex === row && columnIndex === column) ? !isAlive : isAlive
+      )
+    );
+    setGrid(newGrid);
+
+  }, [grid]);
+
+  const handleNextGeneration = useCallback(() => {
+
+  }, []);
+
+  useEffect(() => {
   }, []);
 
   const gridStyle = useMemo(() => ({
@@ -52,16 +62,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
             <option value={30}>30x30</option>
             <option value={40}>40x40</option>
             <option value={50}>50x50</option>
-            <option value={60}>60x60</option>
-            <option value={70}>70x70</option>
-            <option value={80}>80x80</option>
-            <option value={90}>90x90</option>
-            <option value={100}>100x100</option>
           </select>
         </div>
 
         <div className="board-actions">
-          <button onClick={handleClearBoard} className="btn btn-secondary">
+          <button onClick={handleNextGeneration} className="btn btn-primary">
+            Next
+          </button>
+          <button onClick={handleClearBoard} className="btn btn-primary">
             Clear Board
           </button>
         </div>
@@ -74,7 +82,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
         role="grid"
         aria-label={`Game of Life board, ${boardSize} by ${boardSize} cells`}
       >
-        {cells.map((row, rowIndex) =>
+        {grid.map((row, rowIndex) =>
           row.map((isAlive, columnIndex) => (
             <Cell
               key={`${rowIndex}-${columnIndex}`}
@@ -90,7 +98,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ initialSize = 60 }) => {
       <div className="board-info">
         <p>Click cells to toggle their state</p>
         <p>Board Size: {boardSize}x{boardSize}</p>
-        <p>Alive Cells: {cells.flat().filter(Boolean).length}</p>
+        <p>Alive Cells: {grid.flat().filter(Boolean).length}</p>
       </div>
     </div>
   );
