@@ -15,6 +15,19 @@ builder.Services.AddScoped<IBoardRepository, BoardRepository>();
 builder.Services.AddScoped<IBoardService, BoardService>();
 builder.Services.AddScoped<IGameService, GameService>();
 
+// Configure CORS for frontend
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("AllowFrontend",
+    policy =>
+    {
+      policy.WithOrigins("http://localhost:3000")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+    });
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -29,6 +42,8 @@ using (var scope = app.Services.CreateScope())
   
   DbInitializer.Initialize(context);
 }
+
+app.UseCors("AllowFrontend");
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
