@@ -2,13 +2,10 @@ namespace GameOfLife.Application.DTO;
 
 public class BoardDto
 {
-  private bool[][]? _grid;
-  public Guid Id { get; set; }
+  public int Id { get; set; }
   public string Name { get; set; } = string.Empty;
-  public int BoardSize { get; internal set; } = 13;
+  public int BoardSize { get; set; }
   public int Generation { get; set; } = 1;
-  public bool[][]? Grid
-  {
-    get => _grid; internal set => _grid = value ?? null;
-  }
+  public bool[][]? Grid { get; set; }
+  public bool[][]? InitialGrid { get; set; }
 }

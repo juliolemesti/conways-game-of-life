@@ -15,7 +15,7 @@ public class BoardService : IBoardService
     _boardRepository = boardRepository;
   }
 
-  public async Task<BoardDto?> GetBoardByIdAsync(Guid id)
+  public async Task<BoardDto?> GetBoardByIdAsync(int id)
   {
     var board = await _boardRepository.GetBoardByIdAsync(id);
     return board?.ToDto();
@@ -29,15 +29,12 @@ public class BoardService : IBoardService
 
   public async Task<BoardDto> CreateBoardAsync(BoardDto input)
   {
-    var board = new Board
-    {
-      Id = Guid.NewGuid(),
+    var board = await _boardRepository.CreateBoardAsync(new Board {
       Name = input.Name,
       BoardSize = input.BoardSize,
-      Grid = input.Grid
-    };
-
-    await _boardRepository.CreateBoardAsync(board);
+      Grid = input.InitialGrid,
+      InitialGrid = input.InitialGrid
+    });
 
     return board.ToDto();
   }
@@ -49,13 +46,14 @@ public class BoardService : IBoardService
       Id = input.Id,
       Name = input.Name,
       BoardSize = input.BoardSize,
+      InitialGrid = input.InitialGrid,
       Grid = input.Grid
     };
 
     return await _boardRepository.UpdateBoardAsync(board);
   }
 
-  public async Task<bool> DeleteBoardAsync(Guid id)
+  public async Task<bool> DeleteBoardAsync(int id)
   {
     return await _boardRepository.DeleteBoardAsync(id);
   }

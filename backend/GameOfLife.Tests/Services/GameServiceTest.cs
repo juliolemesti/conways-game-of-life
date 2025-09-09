@@ -18,7 +18,6 @@ public class GameServiceTest
     var crossPattern = TestData.CrossPattern(CENTER_POS);
     _testBoard = new Board
     {
-      Id = Guid.NewGuid(),
       Name = "Test Board",
       BoardSize = BOARD_SIZE,
       Grid = TestUtils.CreateTestGrid(BOARD_SIZE, crossPattern)

@@ -12,6 +12,7 @@ public static class BoardExtensions
       Id = board.Id,
       Name = board.Name,
       BoardSize = board.BoardSize,
+      InitialGrid = board.InitialGrid,
       Grid = board.Grid
     };
   }

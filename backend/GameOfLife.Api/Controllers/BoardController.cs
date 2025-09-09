@@ -16,9 +16,8 @@ public class BoardController : ControllerBase
   }
 
   [HttpGet("{id}")]
-  public async Task<ActionResult<BoardDto>> GetGameState(Guid id)
+  public async Task<ActionResult<BoardDto>> GetGameState(int id)
   {
-    Console.WriteLine("GetGameState endpoint called at " + DateTime.Now);
     var board = await _boardService.GetBoardByIdAsync(id);
     return Ok(board);
   }
@@ -26,7 +25,6 @@ public class BoardController : ControllerBase
   [HttpGet]
   public async Task<ActionResult<List<BoardDto>>> GetAllBoards()
   {
-    Console.WriteLine("GetAllBoards endpoint called at " + DateTime.Now);
     var boards = await _boardService.GetAllBoardsAsync();
     return Ok(boards);
   }
@@ -34,15 +32,13 @@ public class BoardController : ControllerBase
   [HttpPost]
   public async Task<ActionResult<BoardDto>> CreateBoard(BoardDto board)
   {
-    Console.WriteLine("CreateBoard endpoint called at " + DateTime.Now);
     var createdBoard = await _boardService.CreateBoardAsync(board);
     return CreatedAtAction(nameof(GetGameState), new { id = createdBoard.Id }, createdBoard);
   }
 
   [HttpPost("{id}")]
-  public async Task<IActionResult> UpdateBoard(Guid id, BoardDto board)
+  public async Task<IActionResult> UpdateBoard(int id, BoardDto board)
   {
-    Console.WriteLine("UpdateBoard endpoint called at " + DateTime.Now);
     if (id != board.Id)
     {
       return BadRequest();
@@ -53,9 +49,8 @@ public class BoardController : ControllerBase
   }
 
   [HttpDelete("{id}")]
-  public async Task<IActionResult> DeleteBoard(Guid id)
+  public async Task<IActionResult> DeleteBoard(int id)
   {
-    Console.WriteLine("DeleteBoard endpoint called at " + DateTime.Now);
     await _boardService.DeleteBoardAsync(id);
     return NoContent();
   }

@@ -1,45 +1,64 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace GameOfLife.Core.Entities;
 
 public class Board
 {
-  public Guid Id { get; set; }
+  public int Id { get; set; }
   public string Name { get; set; } = string.Empty;
   public int BoardSize { get; set; } = 13;
   public int Generation { get; set; } = 1;
   public BoardConvergenceState ConvergenceState { get; set; } = BoardConvergenceState.None;
-  public string BoardState { get; set; } = string.Empty;
+  public string InitialState { get; set; } = string.Empty;
+  public string State { get; set; } = string.Empty;
   public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
   [NotMapped]
-  public bool[][]? Grid { get => GetGrid(); set => SetGrid(value); }
-
-  public bool[][]? GetGrid()
+  public bool[][]? InitialGrid
   {
-    if (string.IsNullOrEmpty(BoardState)) return null;
-
-    try
+    get => GetGridFromState(InitialState); set
     {
-      return JsonSerializer.Deserialize<bool[][]>(BoardState) ?? null;
-    }
-    catch (Exception ex)
-    {
-      Console.WriteLine($"Error deserializing board state {Id}#{Name}: {ex.Message} \n {BoardState}");
-      return null;
+      if (value == null || value.Length != BoardSize || value[0].Length != BoardSize)
+      {
+        throw new Exception($"Grid dimensions do not match board dimensions {Id}#{Name}");
+      }
+      InitialState = JsonSerializer.Serialize(value);
+      if (State == string.Empty) State = InitialState;
     }
   }
 
-  public void SetGrid(bool[][]? grid)
+  [NotMapped]
+  public bool[][]? Grid
   {
-    if (grid == null || grid.Length != BoardSize || grid[0].Length != BoardSize)
+    get => GetGridFromState(State); set
     {
-      throw new Exception($"Grid dimensions do not match board dimensions {Id}#{Name}");
+      if (value == null || value.Length != BoardSize || value[0].Length != BoardSize)
+      {
+        throw new Exception($"Grid dimensions do not match board dimensions {Id}#{Name}");
+      }
+      State = JsonSerializer.Serialize(value);
+      ConvergenceState = IsEmptyState == true ? BoardConvergenceState.Empty : BoardConvergenceState.None;
+      if (InitialState == string.Empty)
+      {
+        InitialState = State;
+      }
     }
+  }
 
-    BoardState = JsonSerializer.Serialize(grid);
-    ConvergenceState = IsEmptyState == true ? BoardConvergenceState.Empty : BoardConvergenceState.None;
+  private bool[][]? GetGridFromState(string state)
+  {
+    if (string.IsNullOrEmpty(state)) return null;
+
+    try
+    {
+      return JsonSerializer.Deserialize<bool[][]>(state) ?? null;
+    }
+    catch (Exception ex)
+    {
+      Console.WriteLine($"Error deserializing board state {Id}#{Name}: {ex.Message} \n {state}");
+      return null;
+    }
   }
 
   public bool? IsEmptyState { get => Grid?.All(row => row.All(cell => !cell)); }

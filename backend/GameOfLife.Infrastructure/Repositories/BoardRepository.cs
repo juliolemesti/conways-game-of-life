@@ -14,7 +14,7 @@ public class BoardRepository : IBoardRepository
     _context = context;
   }
 
-  public async Task<Board?> GetBoardByIdAsync(Guid id)
+  public async Task<Board?> GetBoardByIdAsync(int id)
   {
     return await _context.Boards.FirstOrDefaultAsync(b => b.Id == id);
   }
@@ -38,13 +38,13 @@ public class BoardRepository : IBoardRepository
 
     existingBoard.Name = board.Name;
     existingBoard.BoardSize = board.BoardSize;
-    existingBoard.BoardState = board.BoardState;
+    existingBoard.State = board.State;
 
     await _context.SaveChangesAsync();
     return true;
   }
 
-  public async Task<bool> DeleteBoardAsync(Guid id)
+  public async Task<bool> DeleteBoardAsync(int id)
   {
     var board = await _context.Boards.FindAsync(id);
     if (board == null) return false;
