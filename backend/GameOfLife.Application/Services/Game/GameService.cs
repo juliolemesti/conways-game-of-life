@@ -54,6 +54,9 @@ public class GameService : IGameService
     if (board.Grid.IsDeepEqual(currentBoard.Grid))
     {
       board.ConvergenceState = BoardConvergenceState.StillLife;
+    } else if (board.IsEmptyState == true)
+    {
+      board.ConvergenceState = BoardConvergenceState.Empty;
     }
 
     return board;

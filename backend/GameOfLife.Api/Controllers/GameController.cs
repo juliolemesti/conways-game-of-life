@@ -1,3 +1,6 @@
+using GameOfLife.Application.DTO;
+using GameOfLife.Application.Extensions;
+using GameOfLife.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameOfLife.Api.Controllers;
@@ -7,16 +10,32 @@ namespace GameOfLife.Api.Controllers;
 public class GameController : ControllerBase
 {
 
-  public GameController()
-  {
+  private readonly IGameService _gameService;
 
+  public GameController(IGameService gameService)
+  {
+    _gameService = gameService;
   }
 
-  [HttpGet]
-  public string GetGameState()
+  [HttpPost("NextGeneration")]
+  public ActionResult<BoardDto> NextGeneration(BoardDto board)
   {
-    Console.WriteLine("GetGameState endpoint called at " + DateTime.Now);
-    return "Game is running";
+    var boardEntity = _gameService.GetNextGeneration(board.ToEntity());
+    return Ok(boardEntity.ToDto());
+  }
+
+  [HttpGet("GetXNextGenerations")]
+  public ActionResult<BoardDto> GetXNextGenerations(BoardDto board, int x)
+  {
+    var boardEntity = _gameService.GetXNextGenerations(board.ToEntity(), x);
+    return Ok(boardEntity.ToDto());
+  }
+
+  [HttpGet("GetFinalGeneration")]
+  public ActionResult<BoardDto> GetFinalGeneration(BoardDto board, int maxGenerations)
+  {
+    var boardEntity = _gameService.GetFinalGeneration(board.ToEntity(), maxGenerations);
+    return Ok(boardEntity.ToDto());
   }
 
 }

@@ -17,7 +17,8 @@ public class Board
   [NotMapped]
   public bool[][]? InitialGrid
   {
-    get => GetGridFromState(InitialState); set
+    get => GetGridFromState(InitialState); 
+    set
     {
       if (value == null || value.Length != BoardSize || value[0].Length != BoardSize)
       {
@@ -31,7 +32,8 @@ public class Board
   [NotMapped]
   public bool[][]? Grid
   {
-    get => GetGridFromState(State); set
+    get => GetGridFromState(State); 
+    set
     {
       if (value == null || value.Length != BoardSize || value[0].Length != BoardSize)
       {
@@ -39,10 +41,7 @@ public class Board
       }
       State = JsonSerializer.Serialize(value);
       ConvergenceState = IsEmptyState == true ? BoardConvergenceState.Empty : BoardConvergenceState.None;
-      if (InitialState == string.Empty)
-      {
-        InitialState = State;
-      }
+      if (InitialState == string.Empty) InitialState = State;
     }
   }
 
