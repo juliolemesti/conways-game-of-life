@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-export function useLocalStorage<T>(
-  key: string,
+export function useLocalStorage<T>( 
+  key: string, 
   initialValue: T
 ): [T, (value: T | ((val: T) => T)) => void, () => void] {
   const [storedValue, setStoredValue] = useState<T>(() => {

@@ -3,6 +3,6 @@ export type Board = {
   name: string;
   boardSize: number;
   generation: number;
-  grid?: boolean[][];
+  grid: boolean[][];
   initialGrid: boolean[][];
 };

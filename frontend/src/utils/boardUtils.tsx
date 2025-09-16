@@ -6,11 +6,13 @@ export const BoardUtils = {
     return Array(size).fill(null).map(() => Array(size).fill(false));
   },
   emptyBoard: (size: number = DEFAUL_BOARD_SIZE): Board => {
+    const grid = BoardUtils.initializeGrid(size);
     return {
       name: "Empty Board",
       boardSize: size,
       generation: 1,
-      initialGrid: BoardUtils.initializeGrid(size)
+      initialGrid: grid,
+      grid
     }
   }
 }
